@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
 
 function Chat({ socket, username, recipient }) {
@@ -20,7 +20,7 @@ function Chat({ socket, username, recipient }) {
       //   await socket.emit("send_message", messageData);
       await socket.emit("private message", {
         content: messageData,
-        to: recipient.userID,
+        to: recipient.id,
       });
       setMessageList((list) => [...list, messageData]);
       setCurrentMessage("");

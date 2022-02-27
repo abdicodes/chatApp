@@ -1,11 +1,7 @@
-import React, { useEffect, useState, useRef } from "react";
-import ScrollToBottom from "react-scroll-to-bottom";
-import useObserveScrollPosition from "react-scroll-to-bottom/lib/hooks/useObserveScrollPosition";
+import React, { useEffect, useState } from "react";
 import Chat from "./Chat";
 
-function Dashboard({ socket, username }) {
-  const [currentMessage, setCurrentMessage] = useState("");
-  const [messageList, setMessageList] = useState([]);
+function Dashboard({ socket, user }) {
   const [usersList, setUsersList] = useState([]);
   const [chatPartner, setChatPartner] = useState(null);
 
@@ -19,8 +15,8 @@ function Dashboard({ socket, username }) {
 
   console.log(usersList);
 
-  const startChat = (input) => {
-    setChatPartner(input);
+  const startChat = (user) => {
+    setChatPartner(user);
     console.log(chatPartner);
   };
   return (
@@ -29,13 +25,17 @@ function Dashboard({ socket, username }) {
         return (
           <button key={i} onClick={() => startChat(user)}>
             {" "}
-            {user.user}
+            {user.username}
           </button>
         );
       })}
 
       {chatPartner && (
-        <Chat socket={socket} username={username} recipient={chatPartner} />
+        <Chat
+          socket={socket}
+          username={user.username}
+          recipient={chatPartner}
+        />
       )}
     </div>
   );
