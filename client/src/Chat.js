@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
 
-function Chat({ socket, username, room }) {
+function Chat({ socket, username, recipient }) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
       const messageData = {
-        room: room,
+        recipient: recipient,
         author: username,
         message: currentMessage,
         time:
@@ -17,15 +17,20 @@ function Chat({ socket, username, room }) {
           new Date(Date.now()).getMinutes(),
       };
 
-      await socket.emit("send_message", messageData);
+      //   await socket.emit("send_message", messageData);
+      await socket.emit("private message", {
+        content: messageData,
+        to: recipient.userID,
+      });
       setMessageList((list) => [...list, messageData]);
       setCurrentMessage("");
     }
   };
 
+  //this will add the new message on the frontend side by updating the state on the messageList
   useEffect(() => {
-    socket.on("receive_message", (data) => {
-      setMessageList((list) => [...list, data]);
+    socket.on("private message", ({ content, from }) => {
+      setMessageList((list) => [...list, content]);
     });
   }, [socket]);
 

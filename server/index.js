@@ -49,6 +49,13 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("usersList", users);
     socket.emit("usersList", users);
   });
+  socket.on("private message", ({ content, to }) => {
+    socket.to(to).emit("private message", {
+      content,
+      from: socket.id,
+    });
+    console.log(content);
+  });
 });
 
 server.listen(3001, () => console.log("server listening on port 3001"));
