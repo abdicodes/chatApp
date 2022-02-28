@@ -1,17 +1,30 @@
 import React, { useEffect, useState } from "react";
-import Chat from "./Chat";
+import Chatbox from "./Chatbox";
+import ScrollToBottom from "react-scroll-to-bottom";
 
 function Dashboard({ socket, user }) {
   const [usersList, setUsersList] = useState([]);
   const [chatPartner, setChatPartner] = useState(null);
+  const [message, setMessage] = useState([]);
 
-  // this will track changes in online users
   useEffect(() => {
     socket.on("usersList", (data) => {
       setUsersList(data);
     });
     socket.on("disconnect", (data) => setUsersList(data));
+
+    socket.on("private message", ({ content, from }) => {
+      if (!chatPartner) {
+        setMessage(content);
+
+        setChatPartner(from);
+      }
+    });
   }, [socket]);
+  console.log(message);
+  console.log(chatPartner);
+
+  // this will track changes in online users
 
   console.log(usersList);
 
@@ -31,10 +44,11 @@ function Dashboard({ socket, user }) {
       })}
 
       {chatPartner && (
-        <Chat
+        <Chatbox
+          user={user}
+          chatPartner={chatPartner}
+          messages={message}
           socket={socket}
-          username={user.username}
-          recipient={chatPartner}
         />
       )}
     </div>

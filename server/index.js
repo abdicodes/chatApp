@@ -25,7 +25,7 @@ io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
 
   socket.on("send_user", (data) => {
-    console.log(`new user ${data.user} has joined`);
+    console.log(`new user ${data.username} has joined`);
     console.log("operation successful");
     users = [...users, data];
     socket.broadcast.emit("usersList", users);
@@ -42,9 +42,8 @@ io.on("connection", (socket) => {
   socket.on("private message", ({ content, to }) => {
     socket.to(to).emit("private message", {
       content,
-      from: socket.id,
+      from: users.find((user) => user.id == socket.id),
     });
-    console.log(content);
   });
 });
 
