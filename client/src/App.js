@@ -2,6 +2,7 @@ import "./App.css";
 import io from "socket.io-client";
 import { useState, useEffect } from "react";
 import Dashboard from "./Dashboard";
+import Peer from "peerjs";
 
 const socket = io.connect("http://localhost:3001");
 
@@ -11,6 +12,13 @@ function App() {
   const [showChat, setShowChat] = useState(false);
   const [connected, setConnected] = useState(false);
   const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if (user) {
+      const peer = new Peer(`${user.id}`);
+      console.log(peer);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (connected && socket.connected) {
