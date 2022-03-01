@@ -32,6 +32,15 @@ io.on("connection", (socket) => {
     socket.emit("usersList", users);
   });
 
+  socket.on("update_user", (data) => {
+    users.forEach((user) => {
+      if (user.id === data.id) {
+        user.peerid = data.peerid;
+      }
+    });
+    console.log(`update function${users}`);
+  });
+
   socket.on("disconnect", () => {
     console.log("User Disconnected", socket.id);
     users = users.filter((user) => user.id !== socket.id);
