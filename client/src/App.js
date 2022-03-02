@@ -1,16 +1,18 @@
 import "./App.css";
 import io from "socket.io-client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo, useContext } from "react";
 import Dashboard from "./Dashboard";
+import { UserContext } from "./UserContext";
 
 const socket = io.connect("http://localhost:3001");
 
 function App() {
   const [username, setUsername] = useState("");
-  const [room, setRoom] = useState("");
-  const [showChat, setShowChat] = useState(false);
+
   const [connected, setConnected] = useState(false);
   const [user, setUser] = useState(null);
+
+  const provideValue = useMemo(() => ({ user, setUser }), [user, setUser]);
 
   useEffect(() => {
     if (connected && socket.connected) {
@@ -22,7 +24,6 @@ function App() {
       setUser({ username: username, id: socket.id, peerid: null });
     }
   }, [username, connected]);
-  console.log(user);
 
   if (!connected) {
     return (
@@ -45,7 +46,11 @@ function App() {
       </div>
     );
   } else {
-    return <Dashboard socket={socket} userInfo={user} />;
+    return (
+      <UserContext.Provider value={provideValue}>
+        <Dashboard socket={socket} />
+      </UserContext.Provider>
+    );
   }
 }
 
