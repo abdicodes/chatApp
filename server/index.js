@@ -48,6 +48,7 @@ io.on("connection", (socket) => {
     console.log(users);
     socket.broadcast.emit("usersList", users);
     socket.emit("usersList", users);
+    console.log(socket.id);
   });
   socket.on("private message", ({ content, to }) => {
     socket.to(to).emit("private message", {
