@@ -69,13 +69,13 @@ function Dashboard({ socket }) {
     });
 
     peerInstance.current = peer;
-  }, []);
+  }, []); // eslint-disable-line
   useEffect(() => {
     if (peerConeccted) {
       setUser({ username: user.username, id: user.id, peerid: peerid });
       console.log(user);
     }
-  }, [peerConeccted]);
+  }, [peerConeccted]); // eslint-disable-line
   const startChat = (user) => {
     setChatPartner(user);
   };
