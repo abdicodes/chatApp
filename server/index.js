@@ -38,7 +38,8 @@ io.on("connection", (socket) => {
         user.peerid = data.peerid;
       }
     });
-    console.log(`update function${users}`);
+    console.log("updated function working!");
+    console.log(users);
   });
 
   socket.on("disconnect", () => {
@@ -54,6 +55,13 @@ io.on("connection", (socket) => {
       from: users.find((user) => user.id == socket.id),
     });
   });
+
+  //this has caused errors
+  // socket.on("call request", ({ from, to }) => {
+  //   const callee = users.find((user) => user.peerid === to);
+  //   socket.to(callee.id).emit("answer call", from);
+  //   console.log("answer call is successful");
+  // });
 });
 
 server.listen(3001, () => console.log("server listening on port 3001"));
