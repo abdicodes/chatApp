@@ -37,10 +37,9 @@ function Dashboard({ socket }) {
 
     peer.on("open", (id) => {
       setPeerid(id);
-      console.log(user);
+
       setPeerConnected(true);
     });
-
     peer.on("call", (call) => {
       var getUserMedia =
         navigator.getUserMedia ||
@@ -67,25 +66,61 @@ function Dashboard({ socket }) {
         });
       });
     });
-
     peerInstance.current = peer;
   }, []);
+
   useEffect(() => {
     if (peerConeccted) {
       setUser({ username: user.username, id: user.id, peerid: peerid });
+      socket.emit("update_user", {
+        username: user.username,
+        id: user.id,
+        peerid: peerid,
+      });
       console.log(user);
     }
-  }, [peerConeccted]);
+  }, [peerConeccted, socket, peerid]);
   const startChat = (user) => {
     setChatPartner(user);
   };
-  console.log(user);
+  const call = (remotePeerId) => {
+    var getUserMedia =
+      navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia;
+
+    getUserMedia({ video: true, audio: true }, (mediaStream) => {
+      currentUserVideoRef.current.srcObject = mediaStream;
+      currentUserVideoRef.current.play();
+      socket.emit("call request", { from: user, to: remotePeerId });
+      const call = peerInstance.current.call(remotePeerId, mediaStream);
+
+      call.on("stream", (remoteStream) => {
+        remoteVideoRef.current.srcObject = remoteStream;
+
+        const playPromise = remoteVideoRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              // Automatic playback started!
+            })
+            .catch((error) => {
+              console.log("call is loading");
+            });
+        }
+      });
+    });
+  };
+
   return (
     <div className="chat-window">
       {usersList.map((user, i) => {
         return (
           <div key={i}>
             <button onClick={() => startChat(user)}> {user.username}</button>
+            <button onClick={() => call(user.peerid)}>
+              Call {user.username}
+            </button>
           </div>
         );
       })}
@@ -98,6 +133,21 @@ function Dashboard({ socket }) {
           socket={socket}
         />
       )}
+      <div>{<video ref={currentUserVideoRef} />}</div>
+      <div>{<video ref={remoteVideoRef} />}</div>
+      <div>
+        {" "}
+        {currentUserVideoRef.current && remoteVideoRef.current && (
+          <button
+            onClick={() => {
+              currentUserVideoRef.current = null;
+              remoteVideoRef.current = null;
+            }}
+          >
+            end call
+          </button>
+        )}
+      </div>
     </div>
   );
 }
