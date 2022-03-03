@@ -1,0 +1,11 @@
+repos:
+- repo: local
+  hooks:
+  - id: eslint
+    name: run eslint
+    entry: ./run_linter.sh
+    language: system
+- repo: https://github.com/pre-commit/mirrors-csslint
+  rev: v1.0.5
+  hooks:
+  - id: csslint

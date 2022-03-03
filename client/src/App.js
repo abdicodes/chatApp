@@ -1,6 +1,6 @@
 import "./App.css";
 import io from "socket.io-client";
-import { useState, useEffect, useMemo, useContext } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Dashboard from "./Dashboard";
 import { UserContext } from "./UserContext";
 
