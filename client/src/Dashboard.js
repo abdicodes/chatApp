@@ -137,7 +137,7 @@ function Dashboard({ socket }) {
       <div>{<video ref={remoteVideoRef} />}</div>
       <div>
         {" "}
-        {currentUserVideoRef.current && remoteVideoRef.current && (
+        {/* {currentUserVideoRef.current && remoteVideoRef.current && (
           <button
             onClick={() => {
               currentUserVideoRef.current = null;
@@ -146,7 +146,7 @@ function Dashboard({ socket }) {
           >
             end call
           </button>
-        )}
+        )} */}
       </div>
     </div>
   );
