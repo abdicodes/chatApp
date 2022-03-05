@@ -31,7 +31,7 @@ function App() {
         <h1>Enter your name</h1>
         <input
           type="text"
-          placeholder="John..."
+          placeholder="Enter your name..."
           onChange={(event) => {
             setUsername(event.target.value);
           }}

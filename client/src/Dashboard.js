@@ -8,6 +8,9 @@ function Dashboard({ socket }) {
   const [chatPartner, setChatPartner] = useState(null);
   const [message, setMessage] = useState([]);
   const [peerConeccted, setPeerConnected] = useState(false);
+  const [callerName, setCallerName] = useState("");
+  const [callAnswered, setCallAnswered] = useState(false);
+  const [endCall, setEndCall] = useState(false);
   const [peerid, setPeerid] = useState(null);
   const remoteVideoRef = useRef(null);
   const currentUserVideoRef = useRef(null);
@@ -47,10 +50,12 @@ function Dashboard({ socket }) {
         navigator.mozGetUserMedia;
 
       getUserMedia({ video: true, audio: true }, (mediaStream) => {
+        console.log(mediaStream);
         currentUserVideoRef.current.srcObject = mediaStream;
         currentUserVideoRef.current.play();
         call.answer(mediaStream);
         call.on("stream", function (remoteStream) {
+          setCallAnswered(true);
           remoteVideoRef.current.srcObject = remoteStream;
           //   remoteVideoRef.current.play();
           const playPromise = remoteVideoRef.current.play();
@@ -67,7 +72,7 @@ function Dashboard({ socket }) {
       });
     });
     peerInstance.current = peer;
-  }, []);
+  }, [endCall]);
 
   useEffect(() => {
     if (peerConeccted) {
@@ -83,8 +88,12 @@ function Dashboard({ socket }) {
   const startChat = (user) => {
     setChatPartner(user);
   };
-  const call = (remotePeerId) => {
-    var getUserMedia =
+  const call = (callTo) => {
+    setCallAnswered(true);
+    setEndCall(false);
+    setCallerName(callTo);
+    socket.emit("received call", { from: user, to: callTo.id });
+    const getUserMedia =
       navigator.getUserMedia ||
       navigator.webkitGetUserMedia ||
       navigator.mozGetUserMedia;
@@ -92,8 +101,8 @@ function Dashboard({ socket }) {
     getUserMedia({ video: true, audio: true }, (mediaStream) => {
       currentUserVideoRef.current.srcObject = mediaStream;
       currentUserVideoRef.current.play();
-      socket.emit("call request", { from: user, to: remotePeerId });
-      const call = peerInstance.current.call(remotePeerId, mediaStream);
+
+      const call = peerInstance.current.call(callTo.peerid, mediaStream);
 
       call.on("stream", (remoteStream) => {
         remoteVideoRef.current.srcObject = remoteStream;
@@ -112,15 +121,24 @@ function Dashboard({ socket }) {
     });
   };
 
+  const endcall = () => {
+    setEndCall(true);
+    setCallAnswered(false);
+
+    peerInstance.current.destroy();
+    currentUserVideoRef.current.pause();
+    remoteVideoRef.current.pause();
+
+    socket.emit("end call", { callEnded: true, to: callerName });
+  };
+
   return (
     <div className="chat-window">
       {usersList.map((user, i) => {
         return (
           <div key={i}>
             <button onClick={() => startChat(user)}> {user.username}</button>
-            <button onClick={() => call(user.peerid)}>
-              Call {user.username}
-            </button>
+            <button onClick={() => call(user)}>Call {user.username}</button>
           </div>
         );
       })}
@@ -133,21 +151,23 @@ function Dashboard({ socket }) {
           socket={socket}
         />
       )}
-      <div>{<video ref={currentUserVideoRef} />}</div>
-      <div>{<video ref={remoteVideoRef} />}</div>
+      <div>{!endCall && <video ref={currentUserVideoRef} />}</div>
+      <div>{!endCall && <video ref={remoteVideoRef} />}</div>
       <div>
         {" "}
-        {/* {currentUserVideoRef.current && remoteVideoRef.current && (
-          <button
-            onClick={() => {
-              currentUserVideoRef.current = null;
-              remoteVideoRef.current = null;
-            }}
-          >
-            end call
-          </button>
-        )} */}
+        {!endCall && callAnswered && (
+          <button onClick={endcall}>end call</button>
+        )}
       </div>
+      {/* <div>
+        {" "}
+        {callerName && !callAnswered && (
+          <button onClick={() => setCallAnswered(true)}>
+            {" "}
+            {callerName.username} is calling <br /> answer!
+          </button>
+        )}
+      </div> */}
     </div>
   );
 }

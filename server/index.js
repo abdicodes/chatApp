@@ -58,11 +58,12 @@ io.on("connection", (socket) => {
   });
 
   //this has caused errors
-  // socket.on("call request", ({ from, to }) => {
-  //   const callee = users.find((user) => user.peerid === to);
-  //   socket.to(callee.id).emit("answer call", from);
-  //   console.log("answer call is successful");
-  // });
+  socket.on("received call", ({ from, to }) => {
+    // const callee = users.find((user) => user.peerid === to);
+    socket.to(to).emit("answer call request", from);
+    console.log("answer call is successful");
+    console.log(from);
+  });
 });
 
 server.listen(3001, () => console.log("server listening on port 3001"));
