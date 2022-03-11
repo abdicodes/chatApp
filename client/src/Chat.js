@@ -1,4 +1,4 @@
-//ATTENTION !! this file was replaced by Chatbox.js and kept in case of misbehaviour of the new file!  //////
+// ATTENTION !! this file was replaced by Chatbox.js and kept in case of misbehaviour of the new file!  //////
 
 // import React, { useEffect, useState } from "react";
 // import ScrollToBottom from "react-scroll-to-bottom";
