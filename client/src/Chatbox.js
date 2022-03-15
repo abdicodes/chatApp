@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
-import Peer from "peerjs";
 
 function Chatbox({ user, chatPartner, messages, socket }) {
   const [currentMessage, setCurrentMessage] = useState("");
@@ -11,84 +10,11 @@ function Chatbox({ user, chatPartner, messages, socket }) {
     messages.length === 0 ? [] : [messages]
   );
 
-  const [peerId, setPeerId] = useState("");
-  const [remotePeerIdValue, setRemotePeerIdValue] = useState("");
-  const remoteVideoRef = useRef(null);
-  const currentUserVideoRef = useRef(null);
-  const peerInstance = useRef(null);
-  console.log(`messages length is ${messages.length}`);
-
   useEffect(() => {
-    socket.on("private message", ({ content, from }) => {
+    socket.on("private message", ({ content }) => {
       setMessageList((list) => [...list, content]);
     });
   }, [socket]);
-
-  useEffect(() => {
-    const peer = new Peer();
-
-    peer.on("open", (id) => {
-      setPeerId(id);
-    });
-
-    peer.on("call", (call) => {
-      var getUserMedia =
-        navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia;
-
-      getUserMedia({ video: true, audio: true }, (mediaStream) => {
-        currentUserVideoRef.current.srcObject = mediaStream;
-        currentUserVideoRef.current.play();
-        call.answer(mediaStream);
-        call.on("stream", function (remoteStream) {
-          remoteVideoRef.current.srcObject = remoteStream;
-          //   remoteVideoRef.current.play();
-          const playPromise = remoteVideoRef.current.play();
-          if (playPromise !== undefined) {
-            playPromise
-              .then(() => {
-                // Automatic playback started!
-              })
-              .catch((error) => {
-                console.log("call is loading");
-              });
-          }
-        });
-      });
-    });
-
-    peerInstance.current = peer;
-  }, []);
-
-  const call = (remotePeerId) => {
-    var getUserMedia =
-      navigator.getUserMedia ||
-      navigator.webkitGetUserMedia ||
-      navigator.mozGetUserMedia;
-
-    getUserMedia({ video: true, audio: true }, (mediaStream) => {
-      currentUserVideoRef.current.srcObject = mediaStream;
-      currentUserVideoRef.current.play();
-
-      const call = peerInstance.current.call(remotePeerId, mediaStream);
-
-      call.on("stream", (remoteStream) => {
-        remoteVideoRef.current.srcObject = remoteStream;
-
-        const playPromise = remoteVideoRef.current.play();
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              // Automatic playback started!
-            })
-            .catch((error) => {
-              console.log("call is loading");
-            });
-        }
-      });
-    });
-  };
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
@@ -154,19 +80,6 @@ function Chatbox({ user, chatPartner, messages, socket }) {
           }}
         />
         <button onClick={sendMessage}>&#9658;</button>
-      </div>
-      <h1>Current user id is {peerId}</h1>
-      <input
-        type="text"
-        value={remotePeerIdValue}
-        onChange={(e) => setRemotePeerIdValue(e.target.value)}
-      />
-      <button onClick={() => call(remotePeerIdValue)}>Call</button>
-      <div>
-        <video ref={currentUserVideoRef} />
-      </div>
-      <div>
-        <video ref={remoteVideoRef} />
       </div>
     </div>
   );
