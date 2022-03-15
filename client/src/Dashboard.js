@@ -1,9 +1,11 @@
+//important modules coupled with this module
 import React, { useEffect, useState, useRef, useContext } from "react";
 import Chatbox from "./Chatbox";
 import Peer from "peerjs";
 import { UserContext } from "./UserContext";
 
 function Dashboard({ socket }) {
+  // state objects
   const [usersList, setUsersList] = useState([]);
   const [chatPartner, setChatPartner] = useState(null);
   const [message, setMessage] = useState([]);
@@ -15,9 +17,9 @@ function Dashboard({ socket }) {
   const remoteVideoRef = useRef(null);
   const currentUserVideoRef = useRef(null);
   const peerInstance = useRef(null);
-
   const { user, setUser } = useContext(UserContext);
 
+  //this function will emit the user information to
   useEffect(() => {
     socket.on("usersList", (data) => {
       setUsersList(data);
@@ -134,12 +136,25 @@ function Dashboard({ socket }) {
 
   return (
     <div className="chat-window">
-      {usersList.map((user, i) => {
+      {usersList.map((onlineUser, i) => {
         return (
-          <div key={i}>
-            <button onClick={() => startChat(user)}> {user.username}</button>
-            <button onClick={() => call(user)}>Call {user.username}</button>
-          </div>
+          onlineUser.id !== user.id && (
+            <div key={i}>
+              <button
+                onClick={() =>
+                  onlineUser.id !== user.id && startChat(onlineUser)
+                }
+              >
+                {" "}
+                {onlineUser.username}
+              </button>
+              <button
+                onClick={() => onlineUser.id !== user.id && call(onlineUser)}
+              >
+                Call {onlineUser.username}
+              </button>
+            </div>
+          )
         );
       })}
 
@@ -159,15 +174,6 @@ function Dashboard({ socket }) {
           <button onClick={endcall}>end call</button>
         )}
       </div>
-      {/* <div>
-        {" "}
-        {callerName && !callAnswered && (
-          <button onClick={() => setCallAnswered(true)}>
-            {" "}
-            {callerName.username} is calling <br /> answer!
-          </button>
-        )}
-      </div> */}
     </div>
   );
 }
