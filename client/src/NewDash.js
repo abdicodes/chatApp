@@ -1,11 +1,27 @@
 //important modules coupled with this module
 import React, { useEffect, useState, useRef, useContext } from "react";
-import Chatbox from "./Chatbox";
+
 import ChatLive from "./ChatLive";
 import Peer from "peerjs";
 import { UserContext } from "./UserContext";
+import { makeStyles } from "@mui/styles";
+import SendIcon from "@mui/icons-material/Send";
+import {
+  Fab,
+  Avatar,
+  ListItemText,
+  ListItem,
+  List,
+  Typography,
+  TextField,
+  Divider,
+  Grid,
+  Paper,
+  Box,
+  ListItemIcon,
+} from "@mui/material";
 
-function Dashboard({ socket }) {
+function NewDash({ socket }) {
   // state objects
   const [usersList, setUsersList] = useState([]);
   const [chatPartner, setChatPartner] = useState(null);
@@ -19,6 +35,27 @@ function Dashboard({ socket }) {
   const currentUserVideoRef = useRef(null);
   const peerInstance = useRef(null);
   const { user, setUser } = useContext(UserContext);
+  const useStyles = makeStyles({
+    table: {
+      minWidth: 650,
+    },
+    chatSection: {
+      width: "100%",
+      height: "80vh",
+    },
+    headBG: {
+      backgroundColor: "#e0e0e0",
+    },
+    borderRight500: {
+      borderRight: "1px solid #e0e0e0",
+    },
+    messageArea: {
+      height: "60vh",
+      overflowY: "auto",
+    },
+  });
+
+  const classes = useStyles();
 
   //this function will emit the user information to
   useEffect(() => {
@@ -136,47 +173,48 @@ function Dashboard({ socket }) {
   };
 
   return (
-    <div className="chat-window">
-      {usersList.map((onlineUser, i) => {
-        return (
-          onlineUser.id !== user.id && (
-            <div key={i}>
-              <button
-                onClick={() =>
-                  onlineUser.id !== user.id && startChat(onlineUser)
-                }
-              >
-                {" "}
-                {onlineUser.username}
-              </button>
-              <button
-                onClick={() => onlineUser.id !== user.id && call(onlineUser)}
-              >
-                Call {onlineUser.username}
-              </button>
-            </div>
-          )
-        );
-      })}
-
-      {chatPartner && (
-        <ChatLive
-          user={user}
-          chatPartner={chatPartner}
-          messages={message}
-          socket={socket}
-        />
-      )}
-      <div>{!endCall && <video ref={currentUserVideoRef} />}</div>
-      <div>{!endCall && <video ref={remoteVideoRef} />}</div>
-      <div>
-        {" "}
-        {!endCall && callAnswered && (
-          <button onClick={endcall}>end call</button>
+    <div>
+      <Grid container>
+        <Grid item xs={12}>
+          <Typography variant="h5" className="header-message">
+            Chat
+          </Typography>
+        </Grid>
+      </Grid>
+      <Grid container component={Paper} className={classes.chatSection}>
+        <Grid item xs={3} className={classes.borderRight500}>
+          <List>
+            {usersList.map((onlineUser, i) => {
+              return (
+                onlineUser.id !== user.id && (
+                  <ListItem button key={i}>
+                    <ListItemIcon>
+                      <Avatar
+                        alt={onlineUser.username}
+                        src="https://material-ui.com/static/images/avatar/1.jpg"
+                      />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={onlineUser.username}
+                      onClick={() => startChat(onlineUser)}
+                    ></ListItemText>
+                  </ListItem>
+                )
+              );
+            })}
+          </List>
+        </Grid>
+        {chatPartner && (
+          <ChatLive
+            user={user}
+            chatPartner={chatPartner}
+            messages={message}
+            socket={socket}
+          />
         )}
-      </div>
+      </Grid>
     </div>
   );
 }
 
-export default Dashboard;
+export default NewDash;
