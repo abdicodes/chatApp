@@ -20,7 +20,9 @@ import { makeStyles } from "@mui/styles";
 // socket.io frontend client that connects to the server. if you wish to deploy the app the URL string needs to be changed
 const socket = io.connect("http://localhost:3001");
 const useStyles = makeStyles(() => ({
-  Container: {},
+  Container: {
+    padding: "200px",
+  },
 }));
 
 //the module that will exported to index.js and rendered.

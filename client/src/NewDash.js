@@ -6,6 +6,7 @@ import Peer from "peerjs";
 import { UserContext } from "./UserContext";
 import { makeStyles } from "@mui/styles";
 import SendIcon from "@mui/icons-material/Send";
+import VideoCallIcon from "@mui/icons-material/VideoCall";
 import {
   Fab,
   Avatar,
@@ -19,6 +20,7 @@ import {
   Paper,
   Box,
   ListItemIcon,
+  CardMedia,
 } from "@mui/material";
 
 function NewDash({ socket }) {
@@ -52,6 +54,20 @@ function NewDash({ socket }) {
     messageArea: {
       height: "60vh",
       overflowY: "auto",
+    },
+    video: {
+      width: "220px",
+      height: "180px",
+    },
+    gridContainer: {
+      justifyContent: "center",
+    },
+    paper: {
+      padding: "2px",
+      border: "1px  black",
+      margin: "2px",
+      marginTop: "50px",
+      marginBottom: "50px",
     },
   });
 
@@ -198,6 +214,7 @@ function NewDash({ socket }) {
                       primary={onlineUser.username}
                       onClick={() => startChat(onlineUser)}
                     ></ListItemText>
+                    <VideoCallIcon onClick={() => call(onlineUser)} />
                   </ListItem>
                 )
               );
@@ -212,6 +229,37 @@ function NewDash({ socket }) {
             socket={socket}
           />
         )}
+
+        <Grid item xs={3}>
+          <Grid container className={classes.gridContainer}>
+            {!endCall && (
+              <Paper className={classes.paper}>
+                <Grid item xs={12} md={6}>
+                  <video
+                    playsInline
+                    muted
+                    ref={currentUserVideoRef}
+                    autoPlay
+                    className={classes.video}
+                  />
+                </Grid>
+              </Paper>
+            )}
+            <Divider />
+            {!endCall && (
+              <Paper className={classes.paper}>
+                <Grid item xs={12} md={6}>
+                  <video
+                    playsInline
+                    ref={remoteVideoRef}
+                    autoPlay
+                    className={classes.video}
+                  />
+                </Grid>
+              </Paper>
+            )}
+          </Grid>
+        </Grid>
       </Grid>
     </div>
   );
