@@ -23,6 +23,14 @@ const useStyles = makeStyles(() => ({
   Container: {
     padding: "200px",
   },
+  bodyContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  navbar: {
+    display: "flex",
+    justifyContent: "space-around",
+  },
 }));
 
 //the module that will exported to index.js and rendered.
@@ -53,12 +61,10 @@ function App() {
     return (
       <>
         <CssBaseline />
-        <AppBar position="relative">
-          <Toolbar>
-            <TranslateIcon />
-            <Typography variant="h6">
-              <pre> Bekos</pre>
-            </Typography>
+        <AppBar>
+          <Toolbar className={classes.navbar}>
+            <img src="./favicon.ico" alt="" width="50" />
+            <Typography variant="h6"> Bekos</Typography>
           </Toolbar>
         </AppBar>
         <main>
