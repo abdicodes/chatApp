@@ -159,7 +159,7 @@ function Dashboard({ socket }) {
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <Typography variant="h5" className="header-message">
-            Chat
+            Online users
           </Typography>
         </Grid>
       </Grid>
