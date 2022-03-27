@@ -1,5 +1,6 @@
 // styling file
 
+import { blue } from "@mui/material/colors";
 import { makeStyles } from "@mui/styles";
 const Styles = makeStyles({
   table: {
@@ -14,6 +15,7 @@ const Styles = makeStyles({
   },
   borderRight500: {
     borderRight: "1px solid #e0e0e0",
+    backgroundColor: "#F2F7F9",
   },
   messageArea: {
     height: "60vh",

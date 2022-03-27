@@ -156,7 +156,7 @@ function Dashboard({ socket }) {
 
   return (
     <div>
-      <Grid container>
+      <Grid container spacing={1}>
         <Grid item xs={12}>
           <Typography variant="h5" className="header-message">
             Chat
@@ -164,7 +164,7 @@ function Dashboard({ socket }) {
         </Grid>
       </Grid>
       <Grid container component={Paper} className={classes.chatSection}>
-        <Grid item xs={3} className={classes.borderRight500}>
+        <Grid item xs={2.5} className={classes.borderRight500}>
           <List>
             {usersList.map((onlineUser, i) => {
               return (
@@ -199,40 +199,41 @@ function Dashboard({ socket }) {
             socket={socket}
           />
         )}
-
-        <Grid item xs={3}>
-          <Grid container className={classes.gridContainer}>
-            {!endCall && (
-              <Paper className={classes.paper}>
-                <Grid item xs={12} md={6}>
-                  <video
-                    playsInline
-                    muted
-                    ref={currentUserVideoRef}
-                    autoPlay
-                    className={classes.video}
-                  />
-                </Grid>
-              </Paper>
-            )}
-            <Divider />
-            {!endCall && (
-              <Paper className={classes.paper}>
-                <Grid item xs={12} md={6}>
-                  <video
-                    playsInline
-                    ref={remoteVideoRef}
-                    autoPlay
-                    className={classes.video}
-                  />
-                  {!endCall && callAnswered && (
-                    <Button onClick={endcalling}>end Call</Button>
-                  )}
-                </Grid>
-              </Paper>
-            )}
+        {!endCall && callAnswered && (
+          <Grid item xs={3.5}>
+            <Grid container className={classes.gridContainer}>
+              {!endCall && (
+                <Paper className={classes.paper}>
+                  <Grid item xs={12} md={6}>
+                    <video
+                      playsInline
+                      muted
+                      ref={currentUserVideoRef}
+                      autoPlay
+                      className={classes.video}
+                    />
+                  </Grid>
+                </Paper>
+              )}
+              <Divider />
+              {!endCall && (
+                <Paper className={classes.paper}>
+                  <Grid item xs={12} md={6}>
+                    <video
+                      playsInline
+                      ref={remoteVideoRef}
+                      autoPlay
+                      className={classes.video}
+                    />
+                    {!endCall && callAnswered && (
+                      <Button onClick={endcalling}>end Call</Button>
+                    )}
+                  </Grid>
+                </Paper>
+              )}
+            </Grid>
           </Grid>
-        </Grid>
+        )}
       </Grid>
     </div>
   );
