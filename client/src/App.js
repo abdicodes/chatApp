@@ -1,8 +1,7 @@
 //importing all the necessary modules
 import io from "socket.io-client";
 import { useState, useEffect, useMemo } from "react";
-// import Dashboard from "./Dashboard";
-import NewDash from "./NewDash";
+import Dashboard from "./Dashboard";
 import { UserContext } from "./UserContext";
 import Styles from "./Styles";
 import {
@@ -89,7 +88,7 @@ function App() {
   } else {
     return (
       <UserContext.Provider value={provideValue}>
-        <NewDash socket={socket} />
+        <Dashboard socket={socket} />
       </UserContext.Provider>
     );
   }

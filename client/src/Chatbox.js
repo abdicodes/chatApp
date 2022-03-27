@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import Styles from "./Styles";
 
-function ChatLive({ user, chatPartner, messages, socket }) {
+function Chatbox({ user, chatPartner, messages, socket }) {
   const [currentMessage, setCurrentMessage] = useState("");
 
   /*this is to pop up new messages that comes from other users the logic inside the state is to fix a bug
@@ -80,6 +80,16 @@ function ChatLive({ user, chatPartner, messages, socket }) {
                       secondary={messageContent.time}
                     ></ListItemText>
                   </Grid>
+                  <Grid item xs={12}>
+                    <ListItemText
+                      align={
+                        user.username === messageContent.author
+                          ? "right"
+                          : "left"
+                      }
+                      secondary={messageContent.author}
+                    ></ListItemText>
+                  </Grid>
                 </Grid>
               </ListItem>
             );
@@ -112,4 +122,4 @@ function ChatLive({ user, chatPartner, messages, socket }) {
   );
 }
 
-export default ChatLive;
+export default Chatbox;
