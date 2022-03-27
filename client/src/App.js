@@ -48,7 +48,10 @@ function App() {
         <AppBar>
           <Toolbar className={classes.navbar}>
             <img src="./favicon.ico" alt="" width="50" />
-            <Typography variant="h6"> Bekos</Typography>
+            <Typography variant="h6">
+              {" "}
+              <pre> Bekos Learn new languages!</pre>
+            </Typography>
           </Toolbar>
         </AppBar>
         <main>

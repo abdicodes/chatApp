@@ -44,7 +44,6 @@ const Styles = makeStyles({
   },
   navbar: {
     display: "flex",
-    justifyContent: "space-around",
   },
 });
 export default Styles;
