@@ -1,20 +1,15 @@
-import React, { useEffect, useState, useRef } from "react";
-import { makeStyles } from "@mui/styles";
+import React, { useEffect, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import {
   Fab,
-  Avatar,
   ListItemText,
   ListItem,
   List,
-  Typography,
   TextField,
   Divider,
   Grid,
-  Paper,
-  Box,
-  ListItemIcon,
 } from "@mui/material";
+import Styles from "./Styles";
 
 function ChatLive({ user, chatPartner, messages, socket }) {
   const [currentMessage, setCurrentMessage] = useState("");
@@ -31,6 +26,7 @@ function ChatLive({ user, chatPartner, messages, socket }) {
     });
   }, [socket]);
 
+  //function to handle sending new messages
   const sendMessage = async () => {
     if (currentMessage !== "") {
       const messageData = {
@@ -43,7 +39,6 @@ function ChatLive({ user, chatPartner, messages, socket }) {
           new Date(Date.now()).getMinutes(),
       };
 
-      //   await socket.emit("send_message", messageData);
       await socket.emit("private message", {
         content: messageData,
         to: chatPartner.id,
@@ -52,27 +47,9 @@ function ChatLive({ user, chatPartner, messages, socket }) {
       setCurrentMessage("");
     }
   };
-  const useStyles = makeStyles({
-    table: {
-      minWidth: 650,
-    },
-    chatSection: {
-      width: "100%",
-      height: "80vh",
-    },
-    headBG: {
-      backgroundColor: "#e0e0e0",
-    },
-    borderRight500: {
-      borderRight: "1px solid #e0e0e0",
-    },
-    messageArea: {
-      height: "60vh",
-      overflowY: "auto",
-    },
-  });
 
-  const classes = useStyles();
+  // importing styles
+  const classes = Styles();
 
   return (
     <>

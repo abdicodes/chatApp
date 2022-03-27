@@ -1,10 +1,10 @@
 //importing all the necessary modules
-import "./App.css";
 import io from "socket.io-client";
 import { useState, useEffect, useMemo } from "react";
 // import Dashboard from "./Dashboard";
 import NewDash from "./NewDash";
 import { UserContext } from "./UserContext";
+import Styles from "./Styles";
 import {
   Button,
   TextField,
@@ -14,24 +14,9 @@ import {
   Toolbar,
   Container,
 } from "@mui/material";
-import TranslateIcon from "@mui/icons-material/Translate";
-import { makeStyles } from "@mui/styles";
 
 // socket.io frontend client that connects to the server. if you wish to deploy the app the URL string needs to be changed
 const socket = io.connect("http://localhost:3001");
-const useStyles = makeStyles(() => ({
-  Container: {
-    padding: "200px",
-  },
-  bodyContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-  },
-  navbar: {
-    display: "flex",
-    justifyContent: "space-around",
-  },
-}));
 
 //the module that will exported to index.js and rendered.
 function App() {
@@ -41,7 +26,7 @@ function App() {
   const [user, setUser] = useState(null);
   const provideValue = useMemo(() => ({ user, setUser }), [user, setUser]);
 
-  const classes = useStyles();
+  const classes = Styles();
 
   //this function emits the user information to the server
   useEffect(() => {
