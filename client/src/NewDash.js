@@ -4,23 +4,20 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import ChatLive from "./ChatLive";
 import Peer from "peerjs";
 import { UserContext } from "./UserContext";
-import { makeStyles } from "@mui/styles";
-import SendIcon from "@mui/icons-material/Send";
+import Styles from "./Styles";
+
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import {
-  Fab,
   Avatar,
   ListItemText,
   ListItem,
   List,
   Typography,
-  TextField,
   Divider,
   Grid,
   Paper,
-  Box,
   ListItemIcon,
-  CardMedia,
+  Button,
 } from "@mui/material";
 
 function NewDash({ socket }) {
@@ -37,41 +34,8 @@ function NewDash({ socket }) {
   const currentUserVideoRef = useRef(null);
   const peerInstance = useRef(null);
   const { user, setUser } = useContext(UserContext);
-  const useStyles = makeStyles({
-    table: {
-      minWidth: 650,
-    },
-    chatSection: {
-      width: "100%",
-      height: "80vh",
-    },
-    headBG: {
-      backgroundColor: "#e0e0e0",
-    },
-    borderRight500: {
-      borderRight: "1px solid #e0e0e0",
-    },
-    messageArea: {
-      height: "60vh",
-      overflowY: "auto",
-    },
-    video: {
-      width: "220px",
-      height: "180px",
-    },
-    gridContainer: {
-      justifyContent: "center",
-    },
-    paper: {
-      padding: "2px",
-      border: "1px  black",
-      margin: "2px",
-      marginTop: "50px",
-      marginBottom: "50px",
-    },
-  });
 
-  const classes = useStyles();
+  const classes = Styles();
 
   //this function will emit the user information to
   useEffect(() => {
@@ -89,8 +53,8 @@ function NewDash({ socket }) {
     });
   }, [socket, chatPartner]);
 
-  console.log(user);
-
+  /*initiating a new peer connection for video calling functionality this uses
+  a public server for getting peer id to avoid running two server instances locally  */
   useEffect(() => {
     const peer = new Peer();
 
@@ -106,7 +70,6 @@ function NewDash({ socket }) {
         navigator.mozGetUserMedia;
 
       getUserMedia({ video: true, audio: true }, (mediaStream) => {
-        console.log(mediaStream);
         currentUserVideoRef.current.srcObject = mediaStream;
         currentUserVideoRef.current.play();
         call.answer(mediaStream);
@@ -130,6 +93,7 @@ function NewDash({ socket }) {
     peerInstance.current = peer;
   }, [endCall]);
 
+  // this will send user new information with peer id to server side.
   useEffect(() => {
     if (peerConeccted) {
       setUser({ username: user.username, id: user.id, peerid: peerid });
@@ -138,12 +102,13 @@ function NewDash({ socket }) {
         id: user.id,
         peerid: peerid,
       });
-      console.log(user);
     }
   }, [peerConeccted, socket, peerid]);
   const startChat = (user) => {
     setChatPartner(user);
   };
+
+  // function to intiate a video call
   const call = (callTo) => {
     setCallAnswered(true);
     setEndCall(false);
@@ -176,8 +141,8 @@ function NewDash({ socket }) {
       });
     });
   };
-
-  const endcall = () => {
+  // function to end a video call
+  const endcalling = () => {
     setEndCall(true);
     setCallAnswered(false);
 
@@ -256,6 +221,11 @@ function NewDash({ socket }) {
                     className={classes.video}
                   />
                 </Grid>
+                {!endCall && callAnswered && (
+                  <Button variant="contained" onClick={endcalling}>
+                    end Call
+                  </Button>
+                )}
               </Paper>
             )}
           </Grid>
