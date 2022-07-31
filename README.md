@@ -77,8 +77,4 @@ Distributed under the MIT License. See LICENSE.txt for more information.
 
 ## contact
 
-Steve Coast [steve@stevecoast.com](steve@stevecoast.com)
-
-Stefano Gasco [gascostefano@gmail.com](gascostefano@gmail.com)
-
 Abdirahman Suldaan [suldaan.89@hotmail.com](suldaan.89@hotmail.com)
